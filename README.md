@@ -1,0 +1,1 @@
+Stock service using micro-base framework.
