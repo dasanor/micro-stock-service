@@ -4,7 +4,8 @@
     "version": "v1"
   },
   "models": {
-    "stockModel": "./models/stockModel"
+    "stockModel": "./models/stockModel",
+    "reserveModel": "./models/reserveModel"
   },
   "hooks": {
     "preReserveStock": {
@@ -17,5 +18,14 @@
       "allowReserveTimeOverwrite": false
     }
   },
-  "defaultWarehouseCode": "001"
+  "defaultWarehouseCode": "001",
+  "workers": [
+    {
+      "worker": "unreserveStock",
+      "queue": "unreserveStock",
+      "when": [
+        "* 0/1 * * * *"
+      ]
+    }
+  ]
 }
