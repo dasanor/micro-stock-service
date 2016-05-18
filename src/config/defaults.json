@@ -1,0 +1,21 @@
+{
+  "services": {
+    "name": "stock",
+    "version": "v1"
+  },
+  "models": {
+    "stockModel": "./models/stockModel"
+  },
+  "hooks": {
+    "preReserveStock": {
+      "handler": "./modules/stock/hooks/preReserveStock"
+    },
+    "reserveStock": {
+      "active": true,
+      "handler": "./modules/stock/hooks/reserveStock",
+      "minutesToReserve": 1440,
+      "allowReserveTimeOverwrite": false
+    }
+  },
+  "defaultWarehouseCode": "001"
+}

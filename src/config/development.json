@@ -1,0 +1,11 @@
+{
+  "logger": {
+    "level": "debug"
+  },
+  "db": {
+    "host": "localhost",
+    "db": "micro",
+    "debug": true
+  }
+}
+
