@@ -16,15 +16,19 @@
       "handler": "./modules/stock/hooks/reserveStock",
       "minutesToReserve": 1440,
       "allowReserveTimeOverwrite": false
+    },
+    "unreserveStock": {
+      "active": true,
+      "handler": "./modules/stock/hooks/unreserveStock"
     }
   },
-  "defaultWarehouseCode": "001",
+  "defaultwarehouseId": "001",
   "workers": [
     {
       "worker": "unreserveStock",
       "queue": "unreserveStock",
       "when": [
-        "* 0/1 * * * *"
+        "0 */1 * * * *"
       ]
     }
   ]
