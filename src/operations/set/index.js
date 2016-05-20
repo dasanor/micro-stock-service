@@ -6,7 +6,7 @@ const Boom = require('boom');
  * @param {base} Object The micro-base object
  * @return {Function} The operation factory
  */
-function opFactory(base) {
+function opFactory( base ) {
   /**
    * ## stock.set service
    *
@@ -14,23 +14,28 @@ function opFactory(base) {
    */
   const op = {
     name: 'set',
-    handler: (msg, reply) => {
+    handler: ( {productId, warehouseId, quantityInStock, quantityReserved}, reply ) => {
       base.db.models.Stock
-         .findOne({ productId: msg.productId })
-         .exec()
-         .then(stock => {
-           let stockToSave = stock || new Stock({});
-           Object.assign(stockToSave, msg);
-           return stockToSave.save();
-         })
-         .then(savedStock => {
-           if (base.logger.isDebugEnabled) base.logger.debug(`[stock] stock created for product ${savedStock.productId}`);
-           return reply(savedStock.toClient());
-         })
-         .catch(error => {
-           base.logger.error(error);
-           reply(Boom.wrap(error));
-         });
+        .findOne({ productId, warehouseId })
+        .exec()
+        .then(stock => {
+          const stockToSave = stock ||
+            new base.db.models.Stock({
+              productId,
+              warehouseId
+            });
+          stockToSave.quantityInStock = quantityInStock;
+          if (quantityReserved !== undefined) stockToSave.quantityReserved = quantityReserved;
+          return stockToSave.save();
+        })
+        .then(savedStock => {
+          if (base.logger.isDebugEnabled) base.logger.debug(`[stock] stock set for product ${savedStock.productId}`);
+          return reply(savedStock.toClient());
+        })
+        .catch(error => {
+          base.logger.error(error);
+          reply(Boom.wrap(error));
+        });
     }
   };
 
