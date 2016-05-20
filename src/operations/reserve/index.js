@@ -78,13 +78,6 @@ function opFactory(base) {
     }
   };
 
-  // Create the worker for the unreserve job
-  const unreserveStock = base.services.loadModule('hooks:unreserveStock:handler');
-  const unreserve = base.config.get('hooks:unreserveStock:active');
-  if (unreserve) {
-    unreserveStock(base);
-  }
-
   return op;
 }
 

@@ -16,20 +16,17 @@
       "handler": "./operations/reserve/hooks/reserveStock",
       "minutesToReserve": 2,
       "allowReserveTimeOverwrite": false
-    },
-    "unreserveStock": {
-      "active": true,
-      "handler": "./operations/reserve/hooks/unreserveStock"
     }
   },
   "defaultwarehouseId": "001",
   "workers": [
     {
-      "worker": "unreserveStock",
-      "queue": "unreserveStock",
+      "worker": "unreserveExpired",
+      "queue": "unreserveExpired",
       "when": [
         "0 */1 * * * *"
-      ]
+      ],
+      "handler": "./jobs/unreserveExpired"
     }
   ]
 }
