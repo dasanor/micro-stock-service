@@ -1,47 +1,21 @@
 const Boom = require('boom');
 
-function stockService(base) {
-  base.logger.info(`[service] Instantiating [${base
-     .config.get('services:name')}][${base.config.get('services:version')}]`);
-
+/**
+ * ## `set` operation factory
+ *
+ * @param {base} Object The micro-base object
+ * @return {Function} The operation factory
+ */
+function opFactory(base) {
   // Loads the default warehouse code
   const defaultwarehouseId = base.config.get('defaultwarehouseId');
-
-  // Register model(s)
-  const Stock = require(base.config.get('models:stockModel'))(base);
-  const Reserve = require(base.config.get('models:reserveModel'))(base);
-
-  /**
-   * ## stock.set service
-   *
-   * Creates a new stock or modifies an existent one
-   */
-  const setStock = {
-    name: 'set',
-    handler: (msg, reply) => {
-      Stock.findOne({ productId: msg.productId }).exec()
-         .then(stock => {
-           let stockToSave = stock || new Stock({});
-           Object.assign(stockToSave, msg);
-           return stockToSave.save();
-         })
-         .then(savedStock => {
-           if (base.logger.isDebugEnabled) base.logger.debug(`[stock] stock created for product ${savedStock.productId}`);
-           return reply(savedStock.toClient());
-         })
-         .catch(error => {
-           base.logger.error(error);
-           reply(Boom.wrap(error));
-         });
-    }
-  };
-
+  const preReserveStock = base.services.loadModule('hooks:preReserveStock:handler');
+  const reserveStock = base.services.loadModule('hooks:reserveStock:handler');
   /**
    * ## stock.reserve service
    *
    * Check stock availability and reserve if configured
    */
-
   function retry(fn, retries, timeout, errorCheck) {
     function recurse(i, timeout) {
       return fn().catch(error => {
@@ -59,13 +33,10 @@ function stockService(base) {
     return recurse(1, timeout);
   }
 
-  const preReserveStock = base.services.loadModule('hooks:preReserveStock:handler');
-  const reserveStock = base.services.loadModule('hooks:reserveStock:handler');
-
   function updateStock(productId, quantity, warehouseId, reserveStockForMinutes) {
     return function() {
       return new Promise((resolve, reject) => {
-        Stock.findOne({ productId }).exec()
+        base.db.models.Stock.findOne({ productId }).exec()
            .then(stock => {
              // Check the product existence
              if (!stock) {
@@ -81,7 +52,7 @@ function stockService(base) {
     };
   }
 
-  const reserveProduct = {
+  const op = {
     name: 'reserve',
     handler: ({ productId, quantity, warehouseId = defaultwarehouseId, reserveStockForMinutes }, reply) => {
 
@@ -113,10 +84,7 @@ function stockService(base) {
     unreserveStock(base);
   }
 
-  return [
-    setStock,
-    reserveProduct
-  ];
+  return op;
 }
 
-module.exports = stockService;
+module.exports = opFactory;

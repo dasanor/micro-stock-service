@@ -1,19 +1,23 @@
 function modelFactory(base) {
+  // The warehouse schema
   const warehouseSchema = base.db.Schema({
     warehouseId: { type: String, required: true },
     quantityInStock: { type: Number, required: true },
     quantityReserved: { type: Number, required: true }
   }, { _id: false, minimize: false });
 
+  // The root schema
   const schema = base.db.Schema({
     productId: { type: String, required: true },
     warehouses: [warehouseSchema]
   }, { _id: true, minimize: false, timestamps: true });
 
+  // Enable the virtuals when converting to JSON
   schema.set('toJSON', {
     virtuals: true
   });
 
+  // Add a method to clean the object before sending it to the client
   schema.method('toClient', function() {
     const obj = this.toJSON();
     delete obj._id;
@@ -23,8 +27,10 @@ function modelFactory(base) {
     return obj;
   });
 
+  // Add the indexes
   schema.index({ productId: 1 });
 
+  // Add the model to mongoose
   return base.db.model('Stock', schema);
 }
 
