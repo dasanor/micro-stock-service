@@ -3,7 +3,7 @@ const shortId = require('shortid');
 const Boom = require('boom');
 
 /**
- * Hook to allow customization of the verification process before the stock reserve
+ * Hook to allow customization of the reserve process
  */
 function reserveStock(base) {
   const reserve = base.config.get('hooks:reserveStock:active');
@@ -20,9 +20,9 @@ function reserveStock(base) {
           }, {
             $inc: {
               quantityInStock: -data.quantity,
-              quantityReserved: data.quantity
-            },
-            '__v': data.stock.__v + 1
+              quantityReserved: data.quantity,
+              __v: 1
+            }
           })
           .then((dbResult) => {
             if (dbResult.nModified !== 1) {

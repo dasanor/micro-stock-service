@@ -11,6 +11,7 @@ function opFactory(base) {
   const defaultwarehouseId = base.config.get('defaultwarehouseId');
   const preReserveStock = base.services.loadModule('hooks:preReserveStock:handler');
   const reserveStock = base.services.loadModule('hooks:reserveStock:handler');
+  const postReserveStock = base.services.loadModule('hooks:postReserveStock:handler');
 
   /**
    * ## stock.reserve service
@@ -41,12 +42,13 @@ function opFactory(base) {
           .then(stock => {
             // Check the product existence
             if (!stock) {
-              reject(Boom.notAcceptable(`The product ${productId} doesn't exist`));
+              return reject(Boom.notAcceptable(`The product ${productId} doesn't exist`));
             }
             return { stock, quantity, reserveStockForMinutes };
           })
           .then(data => preReserveStock(data))
           .then(data => reserveStock(data))
+          .then(data => postReserveStock(data))
           .then(data => resolve(data))
           .catch(error => reject(error));
       });
@@ -58,7 +60,7 @@ function opFactory(base) {
     handler: ({ productId, quantity, warehouseId = defaultwarehouseId, reserveStockForMinutes }, reply) => {
 
       // Retries the operation 5 times (with 10ms ramp up times) before giving up, if the "error" is because the concurrency (nmodified!=1)
-      return retry(updateStock(productId, quantity, warehouseId, reserveStockForMinutes), 5, 25, error => error.output ? (error.output.statusCode === 412) : false)
+      retry(updateStock(productId, quantity, warehouseId, reserveStockForMinutes), 5, 25, error => error.output ? (error.output.statusCode === 412) : false)
         .then(data => {
           if (data.result.code === 301) {
             if (base.logger.isDebugEnabled) base.logger.debug(`[stock] ${data.quantity} stock reserved for product ${data.productId} in warehouse ${data.warehouseId}`);

@@ -10,6 +10,9 @@ function preReserveStock(/* base*/) {
       if (data.stock.quantityInStock < data.quantity) {
         reject(Boom.notAcceptable(`The warehouse ${data.stock.warehouseId} doesn't have enough stock for the product ${data.stock.productId}`));
       }
+      if (data.quantity < 1) {
+        return reject(Boom.notAcceptable('Incorrect quantity'));
+      }
       resolve(data);
     });
   };
