@@ -16,9 +16,18 @@
       "handler": "./operations/reserve/hooks/reserveStock",
       "minutesToReserve": 2,
       "allowReserveTimeOverwrite": false
+    },
     "postReserveStock": {
       "handler": "./operations/reserve/hooks/postReserveStock"
     },
+    "preUnreserveStock": {
+      "handler": "./operations/unreserve/hooks/preUnreserveStock"
+    },
+    "unreserveStock": {
+      "handler": "./operations/unreserve/hooks/unreserveStock"
+    },
+    "postUnreserveStock": {
+      "handler": "./operations/unreserve/hooks/postUnreserveStock"
     }
   },
   "defaultwarehouseId": "001",

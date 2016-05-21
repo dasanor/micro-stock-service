@@ -2,13 +2,13 @@ function modelFactory(base) {
   if (base.logger.isDebugEnabled()) base.logger.debug('[db] registering model Stock')
   // The root schema
   const schema = base.db.Schema({
-    _id: {type: String, required: true},
-    stockId: {type: String, required: true},
-    warehouseId: {type: String, required: true},
-    quantity: {type: Number, required: true},
-    expirationTime: {type: Date, required: true},
-    state: {type: String, required: true} // [ ISSUED | USED | EXPIRED ]
-  }, {_id: false, minimize: false, timestamps: true});
+    _id: { type: String, required: true },
+    stockId: { type: String, required: true },
+    warehouseId: { type: String, required: true },
+    quantity: { type: Number, required: true },
+    expirationTime: { type: Date, required: true },
+    state: { type: String, required: true } // [ ISSUED | USED | UNRESERVED | EXPIRED ]
+  }, { _id: false, minimize: false, timestamps: true });
 
   // Enable the virtuals when converting to JSON
   schema.set('toJSON', {
@@ -26,7 +26,7 @@ function modelFactory(base) {
   });
 
   // Add the indexes
-  schema.index({state: 1, expirationTime: 1});
+  schema.index({ state: 1, expirationTime: 1 });
 
   // Add the model to mongoose
   return base.db.model('Reserve', schema);

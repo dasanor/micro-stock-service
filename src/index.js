@@ -7,3 +7,4 @@ require(base.config.get('models:reserveModel'))(base);
 // Add operations
 base.services.add(require('./operations/set')(base));
 base.services.add(require('./operations/reserve')(base));
+base.services.add(require('./operations/unreserve')(base));
