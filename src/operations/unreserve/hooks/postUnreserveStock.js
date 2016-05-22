@@ -6,6 +6,7 @@ const Boom = require('boom');
 function postUnReserveStock(/* base*/) {
   return (data /* reserve, quantity */) => {
     return new Promise((resolve /* , reject */) => {
+      data.result = {};
       resolve(data);
     });
   };

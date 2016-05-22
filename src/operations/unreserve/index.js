@@ -21,12 +21,15 @@ function opFactory(base) {
     name: 'unreserve',
     handler: ({ reserveId, quantity }, reply) => {
       base.db.models.Reserve
-        .findOne({ _id: reserveId, state: 'RESERVED' })
+        .findOne({ _id: reserveId })
         .exec()
         .then(reserve => {
           // Check the reserve existence
           if (!reserve) {
-            return reply(Boom.notAcceptable(`The reserve ${reserveId} doesn't exist or it's expired.`));
+            throw (Boom.notAcceptable(`The reserve ${reserveId} doesn't exist.`, { code: 401 }));
+          }
+          if (reserve.state !== 'ISSUED') {
+            throw (Boom.notAcceptable(`The reserve ${reserveId} it's expired.`, { code: 402 }));
           }
           return { reserve, quantity };
         })

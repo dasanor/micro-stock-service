@@ -26,10 +26,10 @@ function jobFactory(base) {
               return reserve.save();
             })
             .then((/* result */) => {
-              if (base.logger.isDebugEnabled()) base.logger.debug(`[unreserve] unreserved ${reserve._id}`);
+              if (base.logger.isDebugEnabled()) base.logger.debug(`[unreserve] unreserved expired reserve '${reserve._id}'`);
             })
             .catch(error => {
-              base.logger.error(`[unreserve] ${reserve._id}`, error);
+              base.logger.error(`[unreserve] reserve '${reserve._id}'`, error);
             });
         }
         done();
