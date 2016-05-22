@@ -6,17 +6,19 @@ const Boom = require('boom');
  * Hook to allow customization of the reserve process
  */
 function reserveStock(base) {
-  const reserve = base.config.get('hooks:reserveStock:active');
+  const reserveActive = base.config.get('hooks:reserveStock:active');
   const minutesToReserve = base.config.get('hooks:reserveStock:minutesToReserve');
   const allowReserveTimeOverwrite = base.config.get('hooks:reserveStock:allowReserveTimeOverwrite');
   return (data /* stock, quantity, reserveStockForMinutes */) => {
     return new Promise((resolve, reject) => {
 
-      if (reserve) {
-        return base.db.models.Stock.update({
+      if (reserveActive) {
+        return base.db.models.Stock
+          .update({
             _id: data.stock._id,
-            __v: data.stock.__v,
-            warehouseId: data.stock.warehouseId
+            // __v: data.stock.__v,
+            warehouseId: data.stock.warehouseId,
+            quantityInStock: { $gte: data.quantity }
           }, {
             $inc: {
               quantityInStock: -data.quantity,
