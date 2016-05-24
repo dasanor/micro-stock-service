@@ -23,7 +23,7 @@ function opFactory(base) {
         .then(stock => {
           // Check the product existence
           if (!stock) {
-            return reply(Boom.notAcceptable(`The product '${productId}' doesn't exist`));
+            throw (Boom.notAcceptable(`The product '${productId}' doesn't exist`));
           }
           return { stock, quantity, reserveStockForMinutes };
         })
