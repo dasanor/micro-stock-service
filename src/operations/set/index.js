@@ -29,7 +29,7 @@ function opFactory( base ) {
           return stockToSave.save();
         })
         .then(savedStock => {
-          if (base.logger.isDebugEnabled) base.logger.debug(`[stock] stock set for product ${savedStock.productId}`);
+          if (base.logger.isDebugEnabled()) base.logger.debug(`[stock] stock set for product ${savedStock.productId}`);
           return reply(savedStock.toClient());
         })
         .catch(error => {

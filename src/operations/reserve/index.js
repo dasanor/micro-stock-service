@@ -32,7 +32,7 @@ function opFactory(base) {
         .then(data => postReserveStock(data))
         .then(data => {
           if (data.result.code === 301) {
-            if (base.logger.isDebugEnabled) base.logger.debug(`[stock] ${data.quantity} stock reserved for product ${data.productId} in warehouse ${data.warehouseId}`);
+            if (base.logger.isDebugEnabled()) base.logger.debug(`[stock] ${data.quantity} stock reserved for product ${data.productId} in warehouse ${data.warehouseId}`);
           }
           return reply(data.result);
         })
