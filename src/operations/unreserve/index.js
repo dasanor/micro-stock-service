@@ -28,7 +28,7 @@ function opFactory(base) {
           if (!reserve) {
             throw (Boom.notAcceptable(`The reserve ${reserveId} doesn't exist.`, { code: 401 }));
           }
-          if (reserve.state !== 'ISSUED') {
+          if (reserve.status !== 'ISSUED') {
             throw (Boom.notAcceptable(`The reserve ${reserveId} it's expired.`, { code: 402 }));
           }
           return { reserve, quantity };

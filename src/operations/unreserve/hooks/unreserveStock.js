@@ -20,14 +20,14 @@ function unreserveStock(base) {
           if (dbResult.nModified !== 1) {
             return reject(new Boom.preconditionFailed());
           }
-          const newStatus = data.reserve.quantity - data.quantity === 0 ? 'UNRESERVED' : data.reserve.state;
+          const newStatus = data.reserve.quantity - data.quantity === 0 ? 'UNRESERVED' : data.reserve.status;
           return base.db.models.Reserve
             .update({
               _id: data.reserve._id,
               quantity: { $gte: data.quantity }
             }, {
               $inc: { quantity: -data.quantity },
-              state: newStatus
+              status: newStatus
             });
         })
         .then((result /* result */) => {

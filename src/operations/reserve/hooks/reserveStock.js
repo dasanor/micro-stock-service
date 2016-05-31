@@ -39,7 +39,7 @@ function reserveStock(base) {
               stockId: data.stock._id,
               warehouseId: data.stock.warehouseId,
               quantity: data.quantity,
-              state: 'ISSUED',
+              status: 'ISSUED',
               expirationTime
             });
 

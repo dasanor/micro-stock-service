@@ -5,7 +5,7 @@ function jobFactory(base) {
   return (params, done) => {
     base.db.models.Reserve
       .find({
-        state: 'ISSUED',
+        status: 'ISSUED',
         expirationTime: { $lt: new Date() }
       })
       .exec()
@@ -22,7 +22,7 @@ function jobFactory(base) {
               }
             })
             .then((/* result */) => {
-              reserve.state = 'EXPIRED';
+              reserve.status = 'EXPIRED';
               return reserve.save();
             })
             .then((/* result */) => {

@@ -7,7 +7,7 @@ function modelFactory(base) {
     warehouseId: { type: String, required: true },
     quantity: { type: Number, required: true },
     expirationTime: { type: Date, required: true },
-    state: { type: String, required: true } // [ ISSUED | USED | UNRESERVED | EXPIRED ]
+    status: { type: String, required: true } // [ ISSUED | USED | UNRESERVED | EXPIRED ]
   }, { _id: false, minimize: false, timestamps: true });
 
   // Enable the virtuals when converting to JSON
@@ -26,7 +26,7 @@ function modelFactory(base) {
   });
 
   // Add the indexes
-  schema.index({ state: 1, expirationTime: 1 });
+  schema.index({ status: 1, expirationTime: 1 });
 
   // Add the model to mongoose
   return base.db.model('Reserve', schema);
