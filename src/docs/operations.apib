@@ -1,0 +1,243 @@
+Operations with the `Stock` entity
+
+All operations must contain the appropriate `authorization` token:
+  
+```bash
+--header 'authorization: Bearer xxxxx...'
+```
+
+And the `accept` and `content-type` headers:
+ 
+```bash
+  --header 'accept: application/json' \
+  --header 'content-type: application/json'
+```
+
+
+
+
+## Set stock [/services/stock/v1/set]
+
+Creates or updates a Stock record.
+
+::: note
+Example
+```bash
+curl --request POST \
+  --url http://localhost:3000/services/stock/v1/set \
+  --header 'authorization: Bearer xxxxx...' \
+  --header 'accept: application/json' \
+  --header 'content-type: application/json' \
+  --data '{"productId": "0001", "warehouseId": "001", \
+          "quantityInStock": 10000, "quantityReserved": 0}'
+```
+:::
+
+### Set [POST]
+
++ Request default (application/json)
+
+    + Headers
+    
+            accept: application/json
+            authorization: Bearer xxxxx...
+
+    + Attributes (NewStockRequest)
+
++ Response 201 (application/json)
+
+  + Attributes (Stock)
+
+
+
+## Reserve stock [/services/stock/v1/reserve]
+
+Reserves Stock from a Warehouse.
+
+If the stock service is configured to reserve the stock, the response will contain the code 301. The stock will be verified and reserved.
+ 
+If the stock service is not configured to reserve the stock, the response will contain the code 300. The stock will be verified, but no reserve will be made.
+ 
+
+::: note
+Example
+```bash
+curl --request POST \
+  --url http://localhost:3000/services/stock/v1/reserve \
+  --header 'authorization: Bearer xxxxx...' \
+  --header 'accept: application/json' \
+  --header 'content-type: application/json' \
+  --data '{"productId": "0001", "quantity": 1, "warehouseId": "001", \
+          "reserveStockForMinutes": 1440}'
+```
+:::
+
+### Reserve [POST]
+
++ Request default (application/json)
+
+    + Headers
+    
+            accept: application/json
+            authorization: Bearer xxxxx...
+
+    + Attributes (ReserveRequest)
+
++ Response 201 (application/json)
+
+    + Attributes
+  
+      + code:301 (required, number) - Return code
+      + msg:Stock verified and reserved (required, string) - Return message
+      + reserve (Reserve)
+
++ Request !reserve (application/json)
+
+    + Headers
+    
+            accept: application/json
+            authorization: Bearer xxxxx...
+
+    + Attributes (ReserveRequest)
+
++ Response 201 (application/json)
+
+    + Attributes
+  
+      + code:300 (required, number) - Return code
+      + msg:Stock verified but not reserved (required, string) - Return message
+
++ Request !product (application/json)
+
+    + Headers
+    
+            accept: application/json
+            authorization: Bearer xxxxx...
+
+    + Attributes (ReserveRequest)
+
++ Response 406 (application/json)
+
+    + Body
+    
+            {
+              "statusCode": 406,
+              "error": "Not Acceptable",
+              "message": "The product '001' doesn't exist in the '001' warehouse";
+            }
+
++ Request !stock (application/json)
+
+    + Headers
+    
+            accept: application/json
+            authorization: Bearer xxxxx...
+
+    + Attributes (ReserveRequest)
+
++ Response 406 (application/json)
+
+    + Body
+    
+            {
+              "statusCode": 406,
+              "error": "Not Acceptable",
+              "message": "The warehouse '001' doesn't have enough stock for the product '0001'"
+            }
+
+
+
+
+## Unreserve stock [/services/stock/v1/unreserve]
+
+Unreserves Stock from a Warehouse.
+
+::: note
+Example
+```bash
+curl --request POST \
+  --url http://localhost:3000/services/stock/v1/unreserve \
+  --header 'authorization: Bearer xxxxx...' \
+  --header 'accept: application/json' \
+  --header 'content-type: application/json' \
+  --data '{"reserveId": "HJeJVjeX", "quantity": 1}'
+```
+:::
+
+### Unreserve [POST]
+
++ Request default (application/json)
+
+    + Headers
+    
+            accept: application/json
+            authorization: Bearer xxxxx...
+
+    + Attributes (UnreserveRequest)
+
++ Response 200 (application/json)
+
+    + Body
+  
+            {
+            }
+            
++ Request !reserve (application/json)
+
+    + Headers
+    
+            accept: application/json
+            authorization: Bearer xxxxx...
+
+    + Attributes (UnreserveRequest)
+
++ Response 406 (application/json)
+
+    + Body
+  
+            {
+              "statusCode": 406,
+              "error": "Not Acceptable",
+              "message": "The reserve 'HJeJVjeX' doesn't exist.",
+              "code": 401
+            }
+
++ Request !stock (application/json)
+
+    + Headers
+    
+            accept: application/json
+            authorization: Bearer xxxxx...
+
+    + Attributes (UnreserveRequest)
+
++ Response 406 (application/json)
+
+    + Body
+  
+            {
+              "statusCode": 406,
+              "error": "Not Acceptable",
+              "message": "The reserve 'HJeJVjeX' doesn't hold enough stock"
+              "code": 403
+            }
+
++ Request expired (application/json)
+
+    + Headers
+    
+            accept: application/json
+            authorization: Bearer xxxxx...
+
+    + Attributes (UnreserveRequest)
+
++ Response 406 (application/json)
+
+    + Body
+  
+            {
+              "statusCode": 406,
+              "error": "Not Acceptable",
+              "message": "The reserve 'HJeJVjeX' it's expired.",
+              "code": 402
+            }
