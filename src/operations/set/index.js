@@ -25,12 +25,12 @@ function opFactory( base ) {
               warehouseId
             });
           stockToSave.quantityInStock = quantityInStock;
-          if (quantityReserved !== undefined) stockToSave.quantityReserved = quantityReserved;
+          stockToSave.quantityReserved = quantityReserved || 0;
           return stockToSave.save();
         })
         .then(savedStock => {
           if (base.logger.isDebugEnabled()) base.logger.debug(`[stock] stock set for product ${savedStock.productId}`);
-          return reply(savedStock.toClient());
+          return reply(savedStock.toClient()); // TODO: return 200/201
         })
         .catch(error => {
           base.logger.error(error);

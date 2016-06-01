@@ -23,7 +23,7 @@ function opFactory(base) {
         .then(stock => {
           // Check the product existence
           if (!stock) {
-            throw (Boom.notAcceptable(`The product '${productId}' doesn't exist`));
+            throw (Boom.notAcceptable(`The product '${productId}' doesn't exist in the '${warehouseId}' warehouse`));
           }
           return { stock, quantity, reserveStockForMinutes };
         })
@@ -34,7 +34,7 @@ function opFactory(base) {
           if (data.result.code === 301) {
             if (base.logger.isDebugEnabled()) base.logger.debug(`[stock] ${data.quantity} stock reserved for product ${data.productId} in warehouse ${data.warehouseId}`);
           }
-          return reply(data.result);
+          return reply(data.result).code(201);
         })
         .catch(error => {
           if (error.isBoom) {

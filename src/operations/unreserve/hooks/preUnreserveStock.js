@@ -7,7 +7,7 @@ function preUnReserveStock(/* base*/) {
   return (data /* reserve, quantity */) => {
     return new Promise((resolve, reject) => {
       if (data.reserve.quantity < data.quantity) {
-        return reject(Boom.notAcceptable(`The reserve '${data.reserve._id}' doesn't hold enough stock`));
+        return reject(Boom.notAcceptable(`The reserve '${data.reserve._id}' doesn't hold enough stock`, { code: 403 }));
       }
       if (data.quantity < 1) {
         return reject(Boom.notAcceptable('Incorrect quantity'));

@@ -5,7 +5,7 @@ function modelFactory(base) {
     productId: {type: String, required: true},
     warehouseId: {type: String, required: true},
     quantityInStock: {type: Number, required: true},
-    quantityReserved: {type: Number, required: true}
+    quantityReserved: { type: Number, required: true, default: 0 }
   }, {_id: true, minimize: false, timestamps: true});
 
   // Enable the virtuals when converting to JSON
