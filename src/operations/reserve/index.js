@@ -15,6 +15,8 @@ function opFactory(base) {
 
   const op = {
     name: 'reserve',
+    path: '/reserve',
+    method: 'POST',
     handler: ({ productId, quantity, warehouseId = defaultwarehouseId, reserveStockForMinutes }, reply) => {
 
       base.db.models.Stock

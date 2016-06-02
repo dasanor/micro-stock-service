@@ -1,4 +1,4 @@
-const Boom = require('boom');
+const boom = require('boom');
 
 /**
  * ## `unreserve` operation factory
@@ -18,20 +18,22 @@ function opFactory(base) {
    * Unreserves stock
    */
   const op = {
-    name: 'unreserve',
-    handler: ({ reserveId, quantity }, reply) => {
+    name: 'reserve',
+    path: '/reserve/{reserveId}',
+    method: 'PUT',
+    handler: ({ reserveId, unreserveQuantity }, reply) => {
       base.db.models.Reserve
         .findOne({ _id: reserveId })
         .exec()
         .then(reserve => {
           // Check the reserve existence
           if (!reserve) {
-            throw (Boom.notAcceptable(`The reserve '${reserveId}' doesn't exist.`, { code: 401 }));
+            throw (boom.notAcceptable(`The reserve '${reserveId}' doesn't exist.`, { code: 401 }));
           }
           if (reserve.status !== 'ISSUED') {
-            throw (Boom.notAcceptable(`The reserve '${reserveId}' it's expired.`, { code: 402 }));
+            throw (boom.notAcceptable(`The reserve '${reserveId}' it's expired.`, { code: 402 }));
           }
-          return { reserve, quantity };
+          return { reserve, unreserveQuantity };
         })
         .then(data => preUnreserveStock(data))
         .then(data => unreserveStock(data))
@@ -40,7 +42,7 @@ function opFactory(base) {
         .catch(error => {
           if (error.isBoom) return reply(error);
           base.logger.error(error);
-          return reply(Boom.wrap(error));
+          return reply(boom.wrap(error));
         });
     }
   };
