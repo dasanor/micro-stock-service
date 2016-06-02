@@ -16,15 +16,17 @@ And the `accept` and `content-type` headers:
 
 
 
-## Set stock [/services/stock/v1/set]
+## Creates a stock [/services/stock/v1]
 
-Creates or updates a Stock record.
+### Create [POST]
+
+Creates Stock record.
 
 ::: note
 Example
 ```bash
 curl --request POST \
-  --url http://localhost:3000/services/stock/v1/set \
+  --url http://localhost:3000/services/stock/v1 \
   --header 'authorization: Bearer xxxxx...' \
   --header 'accept: application/json' \
   --header 'content-type: application/json' \
@@ -33,7 +35,41 @@ curl --request POST \
 ```
 :::
 
-### Set [POST]
++ Request default (application/json)
+
+    + Headers
+    
+            accept: application/json
+            authorization: Bearer xxxxx...
+
+    + Attributes (CreateStockRequest)
+
++ Response 201 (application/json)
+
+  + Attributes (Stock)
+
+
+
+
+## Stock [/services/stock/v1/{productId}/warehaouse/{warehouseId}]
+
++ Parameters
+
+    + productId: `0001` (string, required) - The Product id
+    + warehouseId: `001` (string, required) - The Warehouse id
+
+### Get [GET]
+
+::: note
+Example
+```bash
+curl --request GET \
+  --url http://localhost:3000/services/stock/v1/0001/warehouse/001 \
+  --header 'authorization: Bearer xxxxx...' \
+  --header 'accept: application/json' \
+  --header 'content-type: application/json'
+```
+:::
 
 + Request default (application/json)
 
@@ -42,9 +78,37 @@ curl --request POST \
             accept: application/json
             authorization: Bearer xxxxx...
 
-    + Attributes (NewStockRequest)
++ Response 200 (application/json)
 
-+ Response 201 (application/json)
+  + Attributes (Stock)
+
+### Update [PUT]
+
+Updates a Stock record
+
+::: note
+Example
+```bash
+curl --request POST \
+  --url http://localhost:3000/services/stock/v1/0001/warehouse/001 \
+  --header 'authorization: Bearer xxxxx...' \
+  --header 'accept: application/json' \
+  --header 'content-type: application/json' \
+  --data '{"quantityInStock": 10000, "quantityReserved": 0}'
+```
+:::
+
+
++ Request default (application/json)
+
+    + Headers
+    
+            accept: application/json
+            authorization: Bearer xxxxx...
+
+    + Attributes (UpdateStockRequest)
+
++ Response 200 (application/json)
 
   + Attributes (Stock)
 
@@ -57,7 +121,8 @@ Reserves Stock from a Warehouse.
 If the stock service is configured to reserve the stock, the response will contain the code 301. The stock will be verified and reserved.
  
 If the stock service is not configured to reserve the stock, the response will contain the code 300. The stock will be verified, but no reserve will be made.
- 
+
+### Reserve [POST]
 
 ::: note
 Example
@@ -67,12 +132,10 @@ curl --request POST \
   --header 'authorization: Bearer xxxxx...' \
   --header 'accept: application/json' \
   --header 'content-type: application/json' \
-  --data '{"productId": "0001", "quantity": 1, "warehouseId": "001", \
+  --data '{"productId": "0001", "warehouseId": "001", "quantity": 1, \
           "reserveStockForMinutes": 1440}'
 ```
 :::
-
-### Reserve [POST]
 
 + Request default (application/json)
 
@@ -148,7 +211,13 @@ curl --request POST \
 
 
 
-## Unreserve stock [/services/stock/v1/unreserve]
+## Unreserve stock [/services/stock/v1/reserve/{reserveId}]
+
++ Parameters
+
+    + reserveId: `HJeJVjeX` (string, required) - The Reserve id
+
+### Unreserve [PUT]
 
 Unreserves Stock from a Warehouse.
 
@@ -156,15 +225,13 @@ Unreserves Stock from a Warehouse.
 Example
 ```bash
 curl --request POST \
-  --url http://localhost:3000/services/stock/v1/unreserve \
+  --url http://localhost:3000/services/stock/v1/reserve/HJeJVjeX \
   --header 'authorization: Bearer xxxxx...' \
   --header 'accept: application/json' \
   --header 'content-type: application/json' \
   --data '{"reserveId": "HJeJVjeX", "quantity": 1}'
 ```
 :::
-
-### Unreserve [POST]
 
 + Request default (application/json)
 

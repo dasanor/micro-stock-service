@@ -11,9 +11,13 @@
 + quantity:1 (required, number) - The quantity reserved.
 + expirationTime: `2016-06-01T19:31:17.674Z` (required, string) - The Reserve expiration date/time (ISO8601 format).
 
-## NewStockRequest (object)
+## CreateStockRequest (object)
 + productId:0001 (required, string) - The Product id to set the stock.
 + warehouseId:001 (required, string) - The Warehouse id to set the stock.
++ quantityInStock:100 (required, number) - The quantity in stock for this Product/Warehouse.
++ quantityReserved:0 (optional, number) - The quantity reserved of this Product/Warehouse.
+
+## UpdateStockRequest (object)
 + quantityInStock:100 (required, number) - The quantity in stock for this Product/Warehouse.
 + quantityReserved:0 (optional, number) - The quantity reserved of this Product/Warehouse.
 
@@ -24,5 +28,4 @@
 + reserveStockForMinutes:1440 (optional, number) - The minutes to reserve the stock until it expires.
 
 ## UnreserveRequest (object)
-+ reserveId:HJeJVjeX (required, string) - The Reserve id to substract from.
 + quantity:1 (required, number) - The quantity to unreserve.
