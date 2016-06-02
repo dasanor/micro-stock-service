@@ -1,12 +1,12 @@
 {
-  "name": "micro-cart-service",
+  "name": "micro-stock-service",
   "version": "0.1.0",
-  "description": "A cart service.",
+  "description": "A stock service.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "doc": "docker -i . -o ../docs/code index.js models operations",
-    "apidoc": "aglio -i main.apib --theme-template triple -o ../docs/api/index.html",
+    "doc": "npm install docker && docker -i . -o docs/code index.js models operations jobs",
+    "apidoc": "npm install aglio && aglio -i docs/main.apib --theme-template triple -o docs/api/index.html",
     "test": "NODE_ENV=test && lab test/test.js",
     "test-cov-html": "NODE_ENV=test && lab -r html -o coverage.html test/test.js"
   },
@@ -23,15 +23,14 @@
     "shortid": "^2.2.6"
   },
   "devDependencies": {
-    "aglio": "^2.2.1",
     "code": "^3.0.0",
     "database-cleaner": "^0.13.0",
-    "docker": "^0.2.14",
     "eslint": "^2.9.0",
     "eslint-config-airbnb": "^9.0.1",
     "eslint-plugin-import": "^1.7.0",
     "eslint-plugin-jsx-a11y": "^1.2.0",
     "eslint-plugin-react": "^5.0.1",
-    "lab": "^10.6.1"
+    "lab": "^10.6.1",
+    "nock": "^8.0.0"
   }
 }
