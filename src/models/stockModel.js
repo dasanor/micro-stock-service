@@ -24,7 +24,7 @@ function modelFactory(base) {
   });
 
   // Add the indexes
-  schema.index({productId: 1});
+  schema.index({ productId: 1, warehouseId: 1 }, { unique: true });
 
   // Add the model to mongoose
   return base.db.model('Stock', schema);
