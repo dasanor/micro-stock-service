@@ -34,11 +34,8 @@
   "workers": [
     {
       "worker": "unreserveExpired",
-      "queue": "unreserveExpired",
-      "when": [
-        "0 */1 * * * *"
-      ],
-      "handler": "./jobs/unreserveExpired"
+      "handler": "./jobs/unreserveExpired",
+      "when": "0 */1 * * * *"
     }
   ]
 }
