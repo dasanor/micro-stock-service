@@ -8,9 +8,9 @@ const boom = require('boom');
  */
 function opFactory(base) {
   // Loads the default warehouse code
-  const preUnreserveStock = base.services.loadModule('hooks:preUnreserveStock:handler');
-  const unreserveStock = base.services.loadModule('hooks:unreserveStock:handler');
-  const postUnreserveStock = base.services.loadModule('hooks:postUnreserveStock:handler');
+  const preUnreserveStock = base.utils.loadModule('hooks:preUnreserveStock:handler');
+  const unreserveStock = base.utils.loadModule('hooks:unreserveStock:handler');
+  const postUnreserveStock = base.utils.loadModule('hooks:postUnreserveStock:handler');
 
   /**
    * ## stock.unreserve service

@@ -9,9 +9,9 @@ const Boom = require('boom');
 function opFactory(base) {
   // Loads the default warehouse code
   const defaultwarehouseId = base.config.get('defaultwarehouseId');
-  const preReserveStock = base.services.loadModule('hooks:preReserveStock:handler');
-  const reserveStock = base.services.loadModule('hooks:reserveStock:handler');
-  const postReserveStock = base.services.loadModule('hooks:postReserveStock:handler');
+  const preReserveStock = base.utils.loadModule('hooks:preReserveStock:handler');
+  const reserveStock = base.utils.loadModule('hooks:reserveStock:handler');
+  const postReserveStock = base.utils.loadModule('hooks:postReserveStock:handler');
 
   const op = {
     name: 'reserve',
