@@ -1,8 +1,14 @@
+const shortId = require('shortid');
+
 function modelFactory(base) {
   if (base.logger.isDebugEnabled()) base.logger.debug('[db] registering model Stock')
   // The root schema
   const schema = base.db.Schema({
-    _id: { type: String, required: true },
+    _id: {
+      type: String, required: true, default: function () {
+        return shortId.generate();
+      }
+    },
     stockId: { type: String, required: true },
     warehouseId: { type: String, required: true },
     quantity: { type: Number, required: true },

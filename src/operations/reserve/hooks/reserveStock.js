@@ -1,5 +1,4 @@
 const moment = require('moment');
-const shortId = require('shortid');
 const Boom = require('boom');
 
 /**
@@ -32,10 +31,8 @@ function reserveStock(base) {
             }
             const minutesTo = allowReserveTimeOverwrite ? data.reserveStockForMinutes : minutesToReserve;
             const expirationTime = moment().add(minutesTo, 'minutes').toDate();
-            const reserveCode = shortId.generate();
 
             const reserve = new base.db.models.Reserve({
-              _id: reserveCode,
               stockId: data.stock._id,
               warehouseId: data.stock.warehouseId,
               quantity: data.quantity,
