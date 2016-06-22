@@ -29,13 +29,7 @@ function opFactory(base) {
           if (base.logger.isDebugEnabled()) base.logger.debug(`[stock] stock set for product ${savedStock.productId}`);
           return reply(savedStock.toClient()).code(201);
         })
-        .catch(error => {
-          if (11000 === error.code || 11001 === error.code) {
-            return reply(boom.forbidden('duplicate key'));
-          }
-          base.logger.error(error);
-          reply(boom.wrap(error));
-        });
+        .catch(error => reply(base.utils.genericErrorResponse(error)));
     }
   };
 
