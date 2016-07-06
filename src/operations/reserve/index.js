@@ -1,4 +1,4 @@
-const Boom = require('boom');
+const boom = require('boom');
 
 /**
  * ## `reserve` operation factory
@@ -9,34 +9,27 @@ const Boom = require('boom');
 function opFactory(base) {
   // Loads the default warehouse code
   const defaultwarehouseId = base.config.get('defaultwarehouseId');
-  const preReserveStock = base.utils.loadModule('hooks:preReserveStock:handler');
-  const reserveStock = base.utils.loadModule('hooks:reserveStock:handler');
-  const postReserveStock = base.utils.loadModule('hooks:postReserveStock:handler');
+
+  const reserveChain = new base.utils.Chain().use('reserveChain');
 
   const op = {
     name: 'reserve',
     path: '/reserve',
     method: 'POST',
-    handler: ({ productId, quantity, warehouseId = defaultwarehouseId, reserveStockForMinutes }, reply) => {
-
-      base.db.models.Stock
-        .findOne({ productId, warehouseId })
-        .exec()
-        .then(stock => {
-          // Check the product existence
-          if (!stock) {
-            throw (Boom.notAcceptable(`The product '${productId}' doesn't exist in the '${warehouseId}' warehouse`));
+    handler: (msg, reply) => {
+      const context = {
+        productId: msg.productId,
+        quantity: msg.quantity,
+        warehouseId: msg.warehouseId || defaultwarehouseId,
+        reserveStockForMinutes: msg.reserveStockForMinutes
+      };
+      reserveChain
+        .exec(context)
+        .then(context => {
+          if (context.result.code === 301) {
+            if (base.logger.isDebugEnabled()) base.logger.debug(`[stock] ${context.quantity} stock reserved for product ${context.productId} in warehouse ${context.warehouseId}`);
           }
-          return { stock, quantity, reserveStockForMinutes };
-        })
-        .then(data => preReserveStock(data))
-        .then(data => reserveStock(data))
-        .then(data => postReserveStock(data))
-        .then(data => {
-          if (data.result.code === 301) {
-            if (base.logger.isDebugEnabled()) base.logger.debug(`[stock] ${data.quantity} stock reserved for product ${data.productId} in warehouse ${data.warehouseId}`);
-          }
-          return reply(data.result).code(201);
+          return reply(context.result).code(201);
         })
         .catch(error => {
           if (error.isBoom) {
@@ -46,7 +39,7 @@ function opFactory(base) {
             return reply(error);
           }
           base.logger.error(error);
-          return reply(Boom.wrap(error));
+          return reply(boom.wrap(error));
         });
     }
   };

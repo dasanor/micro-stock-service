@@ -7,35 +7,26 @@
     "stockModel": "./models/stockModel",
     "reserveModel": "./models/reserveModel"
   },
-  "hooks": {
-    "preReserveStock": {
-      "handler": "./operations/reserve/hooks/preReserveStock"
-    },
-    "reserveStock": {
-      "active": true,
-      "handler": "./operations/reserve/hooks/reserveStock",
-      "minutesToReserve": 2,
-      "allowReserveTimeOverwrite": false
-    },
-    "postReserveStock": {
-      "handler": "./operations/reserve/hooks/postReserveStock"
-    },
-    "preUnreserveStock": {
-      "handler": "./operations/unreserve/hooks/preUnreserveStock"
-    },
-    "unreserveStock": {
-      "handler": "./operations/unreserve/hooks/unreserveStock"
-    },
-    "postUnreserveStock": {
-      "handler": "./operations/unreserve/hooks/postUnreserveStock"
-    }
+  "reserveChain": {
+    "getStock": "./operations/reserve/hooks/getStock",
+    "preReserveStock": "./operations/reserve/hooks/preReserveStock",
+    "reserveStock": "./operations/reserve/hooks/reserveStock"
   },
-  "defaultwarehouseId": "001",
+  "unreserveChain": {
+    "getReserve": "./operations/unreserve/hooks/getReserve",
+    "preUnreserveStock": "./operations/unreserve/hooks/preUnreserveStock",
+    "unreserveStock": "./operations/unreserve/hooks/unreserveStock"
+  },
   "workers": [
     {
       "worker": "unreserveExpired",
       "handler": "./jobs/unreserveExpired",
       "when": "0 */1 * * * *"
     }
-  ]
+  ],
+  "defaultwarehouseId": "001",
+  "minQuantity": 1,
+  "minutesToReserve": 2,
+  "allowReserveTimeOverwrite": false,
+  "reserveActive": true
 }

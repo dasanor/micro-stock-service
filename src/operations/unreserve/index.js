@@ -7,10 +7,8 @@ const boom = require('boom');
  * @return {Function} The operation factory
  */
 function opFactory(base) {
-  // Loads the default warehouse code
-  const preUnreserveStock = base.utils.loadModule('hooks:preUnreserveStock:handler');
-  const unreserveStock = base.utils.loadModule('hooks:unreserveStock:handler');
-  const postUnreserveStock = base.utils.loadModule('hooks:postUnreserveStock:handler');
+
+  const unreserveChain = new base.utils.Chain().use('unreserveChain');
 
   /**
    * ## stock.unreserve service
@@ -21,24 +19,14 @@ function opFactory(base) {
     name: 'reserve',
     path: '/reserve/{reserveId}',
     method: 'PUT',
-    handler: ({ reserveId, unreserveQuantity }, reply) => {
-      base.db.models.Reserve
-        .findOne({ _id: reserveId })
-        .exec()
-        .then(reserve => {
-          // Check the reserve existence
-          if (!reserve) {
-            throw (boom.notAcceptable(`The reserve '${reserveId}' doesn't exist.`, { code: 401 }));
-          }
-          if (reserve.status !== 'ISSUED') {
-            throw (boom.notAcceptable(`The reserve '${reserveId}' it's expired.`, { code: 402 }));
-          }
-          return { reserve, unreserveQuantity };
-        })
-        .then(data => preUnreserveStock(data))
-        .then(data => unreserveStock(data))
-        .then(data => postUnreserveStock(data))
-        .then(data => reply(data.result))
+    handler: (msg, reply) => {
+      const context = {
+        reserveId: msg.reserveId,
+        unreserveQuantity: msg.unreserveQuantity
+      };
+      unreserveChain
+        .exec(context)
+        .then(context => reply(context.result))
         .catch(error => {
           if (error.isBoom) return reply(error);
           base.logger.error(error);

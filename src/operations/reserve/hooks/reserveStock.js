@@ -1,66 +1,63 @@
 const moment = require('moment');
-const Boom = require('boom');
+const boom = require('boom');
 
 /**
  * Hook to allow customization of the reserve process
  */
-function reserveStock(base) {
-  const reserveActive = base.config.get('hooks:reserveStock:active');
-  const minutesToReserve = base.config.get('hooks:reserveStock:minutesToReserve');
-  const allowReserveTimeOverwrite = base.config.get('hooks:reserveStock:allowReserveTimeOverwrite');
-  return (data /* stock, quantity, reserveStockForMinutes */) => {
-    return new Promise((resolve, reject) => {
+function factory(base) {
+  const reserveActive = base.config.get('reserveActive');
+  const minutesToReserve = base.config.get('minutesToReserve');
+  const allowReserveTimeOverwrite = base.config.get('allowReserveTimeOverwrite');
+  return (context, next) => {
+    if (reserveActive) {
+      base.db.models.Stock
+        .update({
+          _id: context.stock._id,
+          warehouseId: context.stock.warehouseId,
+          quantityInStock: { $gte: context.quantity }
+        }, {
+          $inc: {
+            quantityInStock: -context.quantity,
+            quantityReserved: context.quantity,
+            __v: 1
+          }
+        })
+        .then(dbResult => {
+          if (dbResult.nModified !== 1) {
+            return next(new boom.preconditionFailed());
+          }
+          const minutesTo = allowReserveTimeOverwrite ? context.reserveStockForMinutes : minutesToReserve;
+          const expirationTime = moment().add(minutesTo, 'minutes').toDate();
 
-      if (reserveActive) {
-        return base.db.models.Stock
-          .update({
-            _id: data.stock._id,
-            // __v: data.stock.__v,
-            warehouseId: data.stock.warehouseId,
-            quantityInStock: { $gte: data.quantity }
-          }, {
-            $inc: {
-              quantityInStock: -data.quantity,
-              quantityReserved: data.quantity,
-              __v: 1
+          const reserve = new base.db.models.Reserve({
+            stockId: context.stock._id,
+            warehouseId: context.stock.warehouseId,
+            quantity: context.quantity,
+            status: 'ISSUED',
+            expirationTime
+          });
+
+          return reserve.save(); // FIXME if this save fails, the stock level will remain reserved
+        })
+        .then(reserve => {
+          context.result = {
+            code: 301,
+            msg: 'Stock verified and reserved',
+            reserve: {
+              id: reserve._id,
+              warehouseId: reserve.warehouseId,
+              quantity: reserve.quantity,
+              expirationTime: reserve.expirationTime
             }
-          })
-          .then((dbResult) => {
-            if (dbResult.nModified !== 1) {
-              return reject(new Boom.preconditionFailed());
-            }
-            const minutesTo = allowReserveTimeOverwrite ? data.reserveStockForMinutes : minutesToReserve;
-            const expirationTime = moment().add(minutesTo, 'minutes').toDate();
-
-            const reserve = new base.db.models.Reserve({
-              stockId: data.stock._id,
-              warehouseId: data.stock.warehouseId,
-              quantity: data.quantity,
-              status: 'ISSUED',
-              expirationTime
-            });
-
-            return reserve.save(); // FIXME if this save fails, the stock level will remain reserved
-          })
-          .then((reserve) => {
-            data.result = {
-              code: 301,
-              msg: 'Stock verified and reserved',
-              reserve: {
-                id: reserve._id,
-                warehouseId: reserve.warehouseId,
-                quantity: reserve.quantity,
-                expirationTime: reserve.expirationTime
-              }
-            };
-            return resolve(data);
-          })
-          .catch(error => reject(error));
-      }
-      data.result = { code: 300, msg: 'Stock verified but not reserved' };
-      return resolve(data);
-    });
+          };
+          return next();
+        })
+        .catch(next);
+    } else {
+      context.result = { code: 300, msg: 'Stock verified but not reserved' };
+      return next();
+    }
   };
 }
 
-module.exports = reserveStock;
+module.exports = factory;
