@@ -9,7 +9,21 @@
       "error",
       "never"
     ],
-    "global-require": 1
+    "global-require": 1,
+    "no-underscore-dangle": [
+      "error",
+      {
+        "allow": [
+          "_id"
+        ]
+      }
+    ],
+    "no-param-reassign": [
+      "error",
+      {
+        "props": false
+      }
+    ]
   },
   "plugins": [
     "import"
