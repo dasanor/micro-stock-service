@@ -29,9 +29,7 @@ function factory(base) {
             status: newStatus
           });
       })
-      .then(() => {
-        return next();
-      })
+      .then(() => next())
       .catch(next);
   };
 }

@@ -18,7 +18,8 @@ function factory(base) {
         }
         context.reserve = reserve;
         return next();
-      });
+      })
+      .catch(next);
   };
 }
 
