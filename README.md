@@ -1,9 +1,9 @@
 # micro-stock-service
 
-Ecommerce Stock service using micro-base framework (beta).
+Ecommerce Stock service using microbase framework (beta).
 
-Micro-base is a small framework to define and call services, and gives some basic utilities like config, logging, jobs and MongoDB access.
-More info abot the framework [here](https://github.com/ncornag/micro-base/tree/develop).
+MicroBase is a small framework to define and call services, and gives some basic utilities like config, logging, jobs and MongoDB access.
+More info abot the framework [here](https://github.com/ncornag/microbase/tree/develop).
 
 ## Start
 
@@ -29,7 +29,7 @@ reads the files:
 ```
 config/development.json
 config/default.json
-node_modules/micro-base/modules/config/defaults.json
+node_modules/microbase/modules/config/defaults.json
 ```
 
 Each file in the list provides sensitive defaults for the previous one.
