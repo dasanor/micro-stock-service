@@ -1,170 +1,53 @@
 # micro-stock-service
 
-Ecommerce Stock service using microbase framework (beta).
+Ecommerce Stock service, part of the [microbase](http://microbase.io) 
+ecosystem.
 
-MicroBase is a small framework to define and call services, and gives some basic utilities like config, logging, jobs and MongoDB access.
-More info abot the framework [here](https://github.com/ncornag/microbase/tree/develop).
+# Features
 
-## Start
+* Warehose driven
+* Reservation system
 
-```
-cd src
-npm install
-npm start
-```
+## Stocks
 
-## Code documentation
+The Stock entity holds the Product inventory.
 
-The code is documented with `docco` and can be accessed [here](https://rawgit.com/ncornag/micro-stock-service/develop/docs/index.js.html)
+Field | Description| Type | Required | Default
+------|------------|------|----------|--------
+id | Internal unique Stock identifier | String | yes | System generated
+productId | The pProduct identifier | String | yes | -
+warehouseId | The warehouse identifier | String | yes | -
+quantityInStock | The quantity currently in stock for this Product | Numeric | yes | -
+quantityReserved | The quantity currently reserved of this Product | Numeric | yes | -
 
-## Tests
+## Reserves
 
-Shamefully, no tests yet.
+Field | Description| Type | Required | Default
+------|------------|------|----------|--------
+id | Internal unique Stock identifier | String | yes | System generated
+stockId | The Stock identifier | String | yes | - 
+warehouseId | The warehouse identifier | String | yes | -
+quantity | The quantity reserved | yes | Number | -
+expirationTime | The Reserve expiration time | Date | yes | -
+status | The Reserve status [ISSUED/USED/UNRESERVED/EXPIRED] | String | yes | -
 
-## Configuration properties
+## API
 
-The configuration properties are handled via the framework and `nconf`. Out of the box the framework
-reads the files:
+The full API documentation can be accessed in the microbase web http://api.microbase.io 
+and provide access to the Stocks and Reserves endpoints to create, 
+modify and delete them:
 
-```
-config/development.json
-config/default.json
-node_modules/microbase/modules/config/defaults.json
-```
+### Stocks
 
-Each file in the list provides sensitive defaults for the previous one.
-The file `config/development.json` is built with the `NODE_ENV` environment variable therefore, if
-you want to customize the configuration values for a different environment just start node with a
-different one.
-If `NODE_ENV` is `prod`, the config file used will be `config/prod.json`
+Name | Description | Method | Endpoint
+-----|-------------|--------|---------
+stock:create | Creates a Stock | `POST` | `/services/stock/v1`
+stock:get | Retrieves a Stock | `GET` | `/services/stock/v1/{productId}/warehouse/{warehouseId}`
+stock:update | Updates a Stock | `PUT` | `/services/stock/v1/{productId}/warehouse/{warehouseId}`
 
-## Operations
+### Reserves
 
-### set
-
-Creates a new Stock or modifies an existent one
-
-#### Request
-
-```shell
-curl --request POST \
-  --url http://localhost:3000/services/stock/v1/set \
-  --header 'content-type: application/json' \
-  --header 'accept: application/json' \
-  --data '{"productId": "0001", "warehouses": [{"warehouseId": "001", "quantityInStock": 10000, "quantityReserved": 0}]}'
-```
-
-#### Response
-
-The new Stock
-
-```json
-{
-  "id": "573c7696cfb4475a9150752b",
-  "productId": "0001",
-  "warehouses": [
-    {
-      "warehouseId": "001",
-      "quantityInStock": 10000,
-      "quantityReserved": 0
-    }
-  ]
-}
-```
-
-### reserve
-
-Check stock availability and reserves it
-
-#### Request
-
-```shell
-curl --request POST \
-  --url http://localhost:3000/services/stock/v1/reserve \
-  --header 'content-type: application/json' \
-  --header 'accept: application/json' \
-  --data '{"productId": "0001", "quantity": 1, "warehouseId": "001", "reserveStockForMinutes": 1440}'
-```
-
-#### Response
-
-The requested Cart
-
-```json
-{
-  "code": 301,
-  "msg": "Stock verified and reserved",
-  "data": {
-    "id": "HyQMdzjM",
-    "warehouseId": "001",
-    "quantity": 1,
-    "expirationTime": "2016-05-19T10:42:10.632Z"
-  }
-}
-```
-
-### Customizations
-
-#### Models
-
-The service uses the framework provided db utilities, based in Mongoose.
-
-You can customize the models used modifying the properties under thr `models` key.
-
-The module must follow the following convention:
-
-```javascript
-function hook(base) {
-  return (data) => {
-    return new Promise((resolve, reject) => {
-
-      return resolve(data);
-    });
-  };
-}
-module.exports = hook;
-```
-
-##### Stock
-
-```json
-  "stockModel": "./models/stockModel"
-```
-
-##### Reserve
-
-```json
-  "reserveModel": "./models/reserveModel"
-```
-
-#### Hooks
-
-There is a "hook" system to allow customization of the different parts of the system.
-
-You can provide your own implementation configuring the module to be used in a properties file.
-
-##### preReserveStock
-
-Called before the reserve, used for stock verification and validations
-
-```json
-"preReserveStock": {
-  "handler": "./modules/stock/hooks/preReserveStock"
-}
-
-```
-##### reserveStock
-
-Reserves the Stock. Can be disabled with the `active` property.
-
-If the callee wants to overwrite the minutes until the reserve expires, the operation will honor it
-depending on the `allowReserveTimeOverwrite` value.
-
-```json
-"reserveStock": {
-  "active": true,
-  "handler": "./modules/stock/hooks/reserveStock",
-  "minutesToReserve": 1440,
-  "allowReserveTimeOverwrite": false
-}
-```
+Name | Description | Method | Endpoint
+-----|-------------|--------|---------
+stock:reserve | Creates a Reserve | `POST` | `/services/stock/v1/reserve`
+stock:unreserve | Unreserves Product from a Reserve | `PUT` | `/services/stock/v1/reserve/{reserveId}`
