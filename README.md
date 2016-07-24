@@ -1,4 +1,4 @@
-# micro-stock-service
+# Stock Service
 
 Ecommerce Stock service, part of the [microbase](http://microbase.io) 
 ecosystem.
@@ -8,7 +8,9 @@ ecosystem.
 * Warehose enabled
 * Reservation system available with expiration times
 
-## Stocks
+# Entities
+
+**Stock**
 
 The Stock entity holds the Product inventory.
 
@@ -20,7 +22,7 @@ warehouseId | The warehouse identifier | String | yes | -
 quantityInStock | The quantity currently in stock for this Product | Numeric | yes | -
 quantityReserved | The quantity currently reserved of this Product | Numeric | yes | -
 
-## Reserves
+**Reserve**
 
 Field | Description| Type | Required | Default
 ------|------------|------|----------|--------
@@ -31,13 +33,13 @@ quantity | The quantity reserved | yes | Number | -
 expirationTime | The Reserve expiration time | Date | yes | -
 status | The Reserve status [ISSUED/USED/UNRESERVED/EXPIRED] | String | yes | -
 
-## API
+# API
 
 The full API documentation can be accessed in the microbase web http://api.microbase.io 
 and provide access to the Stocks and Reserves endpoints to create, 
 modify and delete them:
 
-### Stocks
+## Stocks
 
 Name | Description | Method | Endpoint
 -----|-------------|--------|---------
@@ -45,7 +47,7 @@ stock:create | Creates a Stock | `POST` | `/services/stock/v1`
 stock:get | Retrieves a Stock | `GET` | `/services/stock/v1/{productId}/warehouse/{warehouseId}`
 stock:addEntry | Updates a Stock | `PUT` | `/services/stock/v1/{productId}/warehouse/{warehouseId}`
 
-### Reserves
+## Reserves
 
 Name | Description | Method | Endpoint
 -----|-------------|--------|---------
