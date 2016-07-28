@@ -1,5 +1,3 @@
-const boom = require('boom');
-
 /**
  * Retrieve the stock
  */
@@ -15,7 +13,7 @@ function factory(base) {
       .then(stock => {
         // Check the stock existence
         if (!stock) {
-          return next(boom.notAcceptable(`The product '${context.productId}' doesn't exist in the '${context.warehouseId}' warehouse`));
+          return next(base.utils.Error('stock_not_found'));
         }
         context.stock = stock;
         return next();

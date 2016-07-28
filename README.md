@@ -10,19 +10,34 @@ ecosystem.
 
 # Entities
 
-**Stock**
+## Stock
 
 The Stock entity holds the Product inventory.
 
-Field | Description| Type | Required | Default
-------|------------|------|----------|--------
-id | Internal unique Stock identifier | String | yes | System generated
-productId | The Product identifier | String | yes | -
-warehouseId | The warehouse identifier | String | yes | -
-quantityInStock | The quantity currently in stock for this Product | Numeric | yes | -
-quantityReserved | The quantity currently reserved of this Product | Numeric | yes | -
+```javascript
+{ 
+    "id" : "rkUg-z0D24", 
+    "productId" : "HySx-MRw2E", 
+    "warehouseId" : "001", 
+    "quantityInStock" : 100, 
+    "quantityReserved" : 0 
+}
+```
 
-**Reserve**
+## Reserve
+
+The Reserves stores information about the reserves in the inventory.
+
+```javascript
+{ 
+    "id" : "SyVHb8PV", 
+    "stockId" : "Syybb0DrDE", 
+    "warehouseId" : "001", 
+    "quantity" : 1, 
+    "status" : "EXPIRED", 
+    "expirationTime" : ISODate("2016-06-09T20:29:39.701+0000") 
+}
+```
 
 Field | Description| Type | Required | Default
 ------|------------|------|----------|--------
@@ -32,24 +47,3 @@ warehouseId | The warehouse identifier | String | yes | -
 quantity | The quantity reserved | yes | Number | -
 expirationTime | The Reserve expiration time | Date | yes | -
 status | The Reserve status [ISSUED/USED/UNRESERVED/EXPIRED] | String | yes | -
-
-# API
-
-The full API documentation can be accessed in the microbase web http://api.microbase.io 
-and provide access to the Stocks and Reserves endpoints to create, 
-modify and delete them:
-
-## Stocks
-
-Name | Description | Method | Endpoint
------|-------------|--------|---------
-stock:create | Creates a Stock | `POST` | `/services/stock/v1`
-stock:get | Retrieves a Stock | `GET` | `/services/stock/v1/{productId}/warehouse/{warehouseId}`
-stock:addEntry | Updates a Stock | `PUT` | `/services/stock/v1/{productId}/warehouse/{warehouseId}`
-
-## Reserves
-
-Name | Description | Method | Endpoint
------|-------------|--------|---------
-stock:reserve | Creates a Reserve | `POST` | `/services/stock/v1/reserve`
-stock:unreserve | Unreserves Product from a Reserve | `PUT` | `/services/stock/v1/reserve/{reserveId}`

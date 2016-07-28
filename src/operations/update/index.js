@@ -1,7 +1,5 @@
-const boom = require('boom');
-
 /**
- * ## `update` operation factory
+ * ## `stock.update` operation factory
  *
  * Update Stock operation
  *
@@ -9,15 +7,8 @@ const boom = require('boom');
  * @return {Function} The operation factory
  */
 function opFactory(base) {
-  /**
-   * ## catalog.update service
-   *
-   * Updates a Stock
-   */
   const op = {
-    name: 'update',
-    path: '/{productId}/warehouse/{warehouseId}',
-    method: 'PUT',
+    name: 'stock.update',
     // TODO: create the product JsonSchema
     handler: ({ productId, warehouseId, quantityInStock, quantityReserved }, reply) => {
       const update = {};
@@ -28,14 +19,11 @@ function opFactory(base) {
         .findOneAndUpdate({ productId, warehouseId }, { $set: update }, { new: true })
         .exec()
         .then(savedStock => {
-          if (!savedStock) throw (boom.notFound('Stock not found'));
+          if (!savedStock) throw base.utils.Error('stock_not_found');
           if (base.logger.isDebugEnabled()) base.logger.debug(`[stock] stock updated for product '${savedStock.productId}' and warehose '${savedStock.warehouseId}'`);
-          return reply(savedStock.toClient());
+          return reply(base.utils.genericResponse({ stock: savedStock.toClient() }));
         })
-        .catch(error => {
-          if (!(error.isBoom || error.statusCode == 404)) base.logger.error(error);
-          reply(boom.wrap(error));
-        });
+        .catch(error => reply(base.utils.genericResponse(null, error)));
     }
   };
   return op;

@@ -1,5 +1,3 @@
-const boom = require('boom');
-
 /**
  * Retrieve the reserve
  */
@@ -11,10 +9,10 @@ function factory(base) {
       .then(reserve => {
         // Check the reserve existence
         if (!reserve) {
-          return next(boom.notAcceptable(`The reserve '${context.reserveId}' doesn't exist.`, { code: 401 }));
+          return next(base.utils.Error('reserve_not_found', context.reserveId));
         }
         if (reserve.status !== 'ISSUED') {
-          return next(boom.notAcceptable(`The reserve '${context.reserveId}' it's expired.`, { code: 402 }));
+          return next(base.utils.Error('reserve_expired'));
         }
         context.reserve = reserve;
         return next();

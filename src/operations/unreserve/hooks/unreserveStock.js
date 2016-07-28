@@ -1,5 +1,3 @@
-const boom = require('boom');
-
 /**
  * Hook to allow customization of the unreserve process
  */
@@ -17,7 +15,7 @@ function factory(base) {
       })
       .then(dbResult => {
         if (dbResult.nModified !== 1) {
-          return next(new boom.preconditionFailed());
+          return next(base.utils.Error('concurrency_error'));
         }
         const newStatus = context.reserve.quantity - context.unreserveQuantity === 0 ? 'UNRESERVED' : context.reserve.status;
         return base.db.models.Reserve

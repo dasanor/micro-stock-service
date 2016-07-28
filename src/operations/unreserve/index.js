@@ -1,7 +1,5 @@
-const boom = require('boom');
-
 /**
- * ## `unreserve` operation factory
+ * ## `stock.unreserve` operation factory
  *
  * @param {base} Object The microbase object
  * @return {Function} The operation factory
@@ -10,15 +8,8 @@ function opFactory(base) {
 
   const unreserveChain = new base.utils.Chain().use('unreserveChain');
 
-  /**
-   * ## stock.unreserve service
-   *
-   * Unreserves stock
-   */
   const op = {
-    name: 'reserve',
-    path: '/reserve/{reserveId}',
-    method: 'PUT',
+    name: 'stock.unreserve',
     handler: (msg, reply) => {
       const context = {
         reserveId: msg.reserveId,
@@ -26,12 +17,8 @@ function opFactory(base) {
       };
       unreserveChain
         .exec(context)
-        .then(context => reply(context.result))
-        .catch(error => {
-          if (error.isBoom) return reply(error);
-          base.logger.error(error);
-          return reply(boom.wrap(error));
-        });
+        .then(context => reply(base.utils.genericResponse(context.result)))
+        .catch(error => reply(base.utils.genericResponse(null, error)));
     }
   };
 

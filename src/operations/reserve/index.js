@@ -1,7 +1,5 @@
-const boom = require('boom');
-
 /**
- * ## `reserve` operation factory
+ * ## `stock.reserve` operation factory
  *
  * @param {base} Object The microbase object
  * @return {Function} The operation factory
@@ -9,19 +7,18 @@ const boom = require('boom');
 function opFactory(base) {
   // Loads the default warehouse code
   const defaultwarehouseId = base.config.get('defaultwarehouseId');
+  const minutesToReserve = base.config.get('minutesToReserve');
 
   const reserveChain = new base.utils.Chain().use('reserveChain');
 
   const op = {
-    name: 'reserve',
-    path: '/reserve',
-    method: 'POST',
+    name: 'stock.reserve',
     handler: (msg, reply) => {
       const context = {
         productId: msg.productId,
         quantity: msg.quantity,
         warehouseId: msg.warehouseId || defaultwarehouseId,
-        reserveStockForMinutes: msg.reserveStockForMinutes
+        reserveStockForMinutes: msg.reserveStockForMinutes || minutesToReserve
       };
       reserveChain
         .exec(context)
@@ -29,18 +26,10 @@ function opFactory(base) {
           if (context.result.code === 301) {
             if (base.logger.isDebugEnabled()) base.logger.debug(`[stock] ${context.quantity} stock reserved for product ${context.productId} in warehouse ${context.warehouseId}`);
           }
-          return reply(context.result).code(201);
+          return reply(base.utils.genericResponse(context.result));
         })
-        .catch(error => {
-          if (error.isBoom) {
-            if (error.output.statusCode === 412) {
-              base.logger.warn('[stock] Concurrency error');
-            }
-            return reply(error);
-          }
-          base.logger.error(error);
-          return reply(boom.wrap(error));
-        });
+        // TODO log concurrency errors
+        .catch(error => reply(base.utils.genericResponse(null, error)));
     }
   };
 

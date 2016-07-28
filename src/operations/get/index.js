@@ -1,7 +1,5 @@
-const boom = require('boom');
-
 /**
- * ## `get` operation factory
+ * ## `stock.info` operation factory
  *
  * Get Stock operation
  *
@@ -9,28 +7,18 @@ const boom = require('boom');
  * @return {Function} The operation factory
  */
 function opFactory(base) {
-  /**
-   * ## catalog.get service
-   *
-   * Gets a Stock
-   */
   const op = {
-    name: 'get',
-    path: '/{productId}/warehouse/{warehouseId}',
-    method: 'GET',
+    name: 'stock.info',
     // TODO: create the product JsonSchema
     handler: ({ productId, warehouseId }, reply) => {
       return base.db.models.Stock
         .findOne({ productId, warehouseId })
         .exec()
         .then(stock => {
-          if (!stock) throw (boom.notFound('Stock not found'));
+          if (!stock) throw base.utils.Error('stock_not_found');
           return reply(stock.toClient());
         })
-        .catch(error => {
-          if (!(error.isBoom || error.statusCode == 404)) base.logger.error(error);
-          reply(boom.wrap(error));
-        });
+        .catch(error => reply(base.utils.genericResponse(null, error)));
     }
   };
   return op;
