@@ -16,7 +16,7 @@ function opFactory(base) {
         .exec()
         .then(stock => {
           if (!stock) throw base.utils.Error('stock_not_found');
-          return reply(stock.toClient());
+          return reply(base.utils.genericResponse({ stock: stock.toClient() }));
         })
         .catch(error => reply(base.utils.genericResponse(null, error)));
     }

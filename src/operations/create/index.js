@@ -1,5 +1,3 @@
-const boom = require('boom');
-
 /**
  * ## `stock.create` operation factory
  *
@@ -10,7 +8,7 @@ function opFactory(base) {
   const op = {
     name: 'stock.create',
     // TODO: create the stock JsonSchema
-    handler: ({productId, warehouseId, quantityInStock, quantityReserved}, reply) => {
+    handler: ({ productId, warehouseId, quantityInStock, quantityReserved }, reply) => {
       const stockToSave = new base.db.models.Stock({
         productId,
         warehouseId,
@@ -19,7 +17,9 @@ function opFactory(base) {
       });
       stockToSave.save()
         .then(savedStock => {
-          if (base.logger.isDebugEnabled()) base.logger.debug(`[stock] stock set for product ${savedStock.productId}`);
+          if (base.logger.isDebugEnabled()) {
+            base.logger.debug(`[stock] stock set for product ${savedStock.productId}`);
+          }
           return reply(base.utils.genericResponse({ stock: savedStock.toClient() }));
         })
         .catch(error => reply(base.utils.genericResponse(null, error)));

@@ -3,7 +3,6 @@
  */
 function factory(base) {
   return (context, next) => {
-
     base.db.models.Stock
       .findOne({
         productId: context.productId,

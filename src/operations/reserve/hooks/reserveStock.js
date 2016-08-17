@@ -47,7 +47,7 @@ function factory(base) {
                 }
               };
               return next();
-            })
+            });
         } else {
           context.result = {
             warning: 'stock_verified_but_not_reserved'

@@ -23,8 +23,8 @@ function opFactory(base) {
       reserveChain
         .exec(context)
         .then(context => {
-          if (context.result.code === 301) {
-            if (base.logger.isDebugEnabled()) base.logger.debug(`[stock] ${context.quantity} stock reserved for product ${context.productId} in warehouse ${context.warehouseId}`);
+          if (context.result && context.result.reserve) {
+            if (base.logger.isDebugEnabled()) base.logger.debug(`[stock] reserved  ${context.quantity} product ${context.productId} in warehouse ${context.warehouseId}`);
           }
           return reply(base.utils.genericResponse(context.result));
         })
