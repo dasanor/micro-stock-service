@@ -47,3 +47,7 @@ warehouseId | The warehouse identifier | String | yes | -
 quantity | The quantity reserved | yes | Number | -
 expirationTime | The Reserve expiration time | Date | yes | -
 status | The Reserve status [ISSUED/USED/UNRESERVED/EXPIRED] | String | yes | -
+
+# API
+
+The full API documentation can be accessed in the microbase web http://docs.microbase.io
