@@ -6,7 +6,6 @@
  */
 function opFactory(base) {
   const op = {
-    name: 'stock.create',
     // TODO: create the stock JsonSchema
     handler: ({ productId, warehouseId, quantityInStock, quantityReserved }, reply) => {
       const stockToSave = new base.db.models.Stock({

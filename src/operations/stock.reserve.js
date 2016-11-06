@@ -12,7 +12,6 @@ function opFactory(base) {
   const reserveChain = new base.utils.Chain().use('reserveChain');
 
   const op = {
-    name: 'stock.reserve',
     handler: (msg, reply) => {
       const context = {
         productId: msg.productId,

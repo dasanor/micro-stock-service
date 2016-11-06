@@ -9,7 +9,6 @@ function opFactory(base) {
   const unreserveChain = new base.utils.Chain().use('unreserveChain');
 
   const op = {
-    name: 'stock.unreserve',
     handler: (msg, reply) => {
       const context = {
         reserveId: msg.reserveId,

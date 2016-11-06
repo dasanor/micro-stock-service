@@ -9,14 +9,14 @@
     "reserveModel": "./models/reserveModel"
   },
   "reserveChain": {
-    "getStock": "./operations/reserve/hooks/getStock",
-    "preReserveStock": "./operations/reserve/hooks/preReserveStock",
-    "reserveStock": "./operations/reserve/hooks/reserveStock"
+    "getStock": "./operations/chains/reserve/getStock",
+    "preReserveStock": "./operations/chains/reserve/preReserveStock",
+    "reserveStock": "./operations/chains/reserve/reserveStock"
   },
   "unreserveChain": {
-    "getReserve": "./operations/unreserve/hooks/getReserve",
-    "preUnreserveStock": "./operations/unreserve/hooks/preUnreserveStock",
-    "unreserveStock": "./operations/unreserve/hooks/unreserveStock"
+    "getReserve": "./operations/chains/unreserve/getReserve",
+    "preUnreserveStock": "./operations/chains/unreserve/preUnreserveStock",
+    "unreserveStock": "./operations/chains/unreserve/unreserveStock"
   },
   "workers": [
     {

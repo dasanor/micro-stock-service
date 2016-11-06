@@ -8,7 +8,6 @@
  */
 function opFactory(base) {
   const op = {
-    name: 'stock.update',
     // TODO: create the product JsonSchema
     handler: ({ productId, warehouseId, quantityInStock, quantityReserved }, reply) => {
       const update = {};

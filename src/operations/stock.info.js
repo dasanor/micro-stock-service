@@ -8,7 +8,6 @@
  */
 function opFactory(base) {
   const op = {
-    name: 'stock.info',
     // TODO: create the product JsonSchema
     handler: ({ productId, warehouseId }, reply) => {
       return base.db.models.Stock
