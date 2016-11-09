@@ -3,6 +3,12 @@
     "express": {
       "enabled": false
     }
+  },
+  "services": {
+    "defaultTransports": [
+      "http"
+    ],
+    "defaultCallTransport": "http"
   }
 }
 
