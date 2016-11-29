@@ -8,7 +8,7 @@
     "defaultTransports": [
       "http"
     ],
-    "defaultCallTransport": "http"
+    "defaultOutTransport": "http"
   }
 }
 
