@@ -82,13 +82,30 @@ function createStock() {
       quantityInStock: 10000,
       quantityReserved: 0
     }
-  });
+  })
+    .then(response => {
+      return callService({
+        url: '/services/stock/v1/stock.reserve',
+        payload: {
+          productId: '001',
+          warehouseId: '001',
+          quantity: 1
+        }
+      });
+    });
 }
 
 function getStock(productId, warehouseId){
   return callService({
     url: `/services/stock/v1/stock.info?productId=${productId}&warehouseId=${warehouseId}`
   })
+    .then(response =>{
+      let stockId = response.body.stock.id;
+
+      return base.db.models.Reserve
+        .findOne({stockId : stockId})
+        .exec()
+    });
 }
 
 /*
@@ -103,16 +120,13 @@ describe('Stock', () => {
   });
 
   it('renew a reserve', done => {
-    const options = {
-      url: '/services/cart/v1/cart.create'
-    };
     getStock('001', '001')
-        .then(response =>{
+        .then(reserve =>{
           const options = {
             url: '/services/stock/v1/stock.reserve.renew',
             payload : {
-              id: response.body.data[0].id,
-              reserveStockForMinutes: 60
+              id: reserve.id,
+              reserveStockForMinutes: 1440
             }
           };
 
@@ -122,6 +136,10 @@ describe('Stock', () => {
           expect(response.statusCode).to.equal(200);
           const result = response.body;
           expect(result.ok).to.equal(true);
+
+          let now = new Date();
+          let expirationTime = new Date(result.reserve.expirationTime);
+          expect((now.getDay()+1)%7).to.equal(expirationTime.getDay());
 
           done();
         })

@@ -6,3 +6,5 @@ require(base.config.get('models:reserveModel'))(base);
 
 // Add operations
 base.services.addOperationsFromFolder();
+
+module.exports = base;
