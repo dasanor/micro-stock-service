@@ -12,17 +12,19 @@ function opFactory(base) {
 
   const op = {
     validator: {
-      schema: require(base.config.get('schemas:renewReserve')),
+      schema: require(base.config.get('schemas:renewReserve'))
     },
     handler: (msg, reply) => {
       if (reserveActive) {
-        let id = msg.id;
+        const id = msg.id;
 
         base.db.models.Reserve
           .findOne({ _id: id })
           .exec()
           .then(reserve => {
             if (!reserve) throw base.utils.Error('reserve_not_found', id);
+
+            if(new Date() > reserve.expirationTime) throw base.utils.Error('reserve_expired', id);
 
             const minutesTo = allowReserveTimeOverwrite ? msg.reserveStockForMinutes : minutesToReserve;
             const expirationTime = moment().add(minutesTo, 'minutes').toDate();
@@ -37,7 +39,7 @@ function opFactory(base) {
             return reply(base.utils.genericResponse({ reserve: savedReserve.toClient() }));
           })
           .catch(error => {
-            reply(base.utils.genericResponse(null, error))
+            return reply(base.utils.genericResponse(null, error));
           });
       } else {
         return reply(base.utils.genericResponse({warning: 'reserve_not_renewed'}));
