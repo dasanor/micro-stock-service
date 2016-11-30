@@ -8,6 +8,9 @@
     "stockModel": "./models/stockModel",
     "reserveModel": "./models/reserveModel"
   },
+  "schemas": {
+    "renewReserve": "./schemas/renewReserveSchema"
+  },
   "reserveChain": {
     "getStock": "./operations/chains/reserve/getStock",
     "preReserveStock": "./operations/chains/reserve/preReserveStock",
