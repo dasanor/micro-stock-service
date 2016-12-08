@@ -1,7 +1,9 @@
 const shortId = require('shortid');
 
-function modelFactory(base) {
-  if (base.logger.isDebugEnabled()) base.logger.debug('[db] registering model Stock')
+function modelFactory(base, configKeys) {
+  const modelName = configKeys[configKeys.length - 1];
+  if (base.logger.isDebugEnabled()) base.logger.debug(`[db] registering model '${modelName}'`);
+
   // The root schema
   const schema = base.db.Schema({
     _id: {
@@ -34,8 +36,10 @@ function modelFactory(base) {
   // Add the indexes
   schema.index({ status: 1, expirationTime: 1 });
 
+  const model = base.db.model(modelName, schema);
+
   // Add the model to mongoose
-  return base.db.model('Reserve', schema);
+  return model;
 }
 
 module.exports = modelFactory;

@@ -5,8 +5,8 @@
     "style": "RPC"
   },
   "models": {
-    "stockModel": "./models/stockModel",
-    "reserveModel": "./models/reserveModel"
+    "Stock": "./models/stockModel",
+    "Reserve": "./models/reserveModel"
   },
   "schemas": {
     "renewReserve": "./schemas/renewReserveSchema"
