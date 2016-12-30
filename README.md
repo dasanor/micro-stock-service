@@ -1,5 +1,29 @@
 # Stock Service
 
+[![NPM version][npm-image]][npm-url] 
+[![Downloads][downloads-image]][npm-url] 
+[![Build Status][travis-image]][travis-url] 
+[![Coverage Status][coveralls-image]][coveralls-url] 
+[![bitHound Overall Score][bithound-overal-image]][bithound-url]
+[![bitHound Code][bithound-code-image]][bithound-url]
+[![Dependency status][bithound-image]][bithound-url] 
+[![Dev Dependency status][bithound-dev-image]][bithound-url] 
+
+[npm-url]:https://npmjs.org/package/microbase
+[downloads-image]:http://img.shields.io/npm/dm/microbase.svg
+[npm-image]:http://img.shields.io/npm/v/microbase.svg
+
+[travis-url]:https://travis-ci.org/ncornag/micro-stock-service
+[travis-image]:http://img.shields.io/travis/ncornag/micro-stock-service/develop.svg
+[coveralls-url]:https://coveralls.io/r/ncornag/micro-stock-service
+[coveralls-image]:https://img.shields.io/coveralls/ncornag/micro-stock-service/develop.svg
+
+[bithound-url]:https://www.bithound.io/github/ncornag/micro-stock-service/develop
+[bithound-overal-image]:https://www.bithound.io/github/ncornag/micro-stock-service/badges/score.svg
+[bithound-image]:https://img.shields.io/bithound/dependencies/github/ncornag/micro-stock-service.svg
+[bithound-dev-image]:https://img.shields.io/bithound/devDependencies/github/ncornag/micro-stock-service.svg
+[bithound-code-image]:https://www.bithound.io/github/ncornag/micro-stock-service/badges/code.svg
+
 Ecommerce Stock service, part of the [microbase](http://microbase.io) 
 ecosystem.
 
