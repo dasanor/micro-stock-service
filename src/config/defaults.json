@@ -5,21 +5,21 @@
     "style": "RPC"
   },
   "models": {
-    "Stock": "./models/stockModel",
-    "Reserve": "./models/reserveModel"
+    "Stock": "${servicePath}/models/stockModel",
+    "Reserve": "${servicePath}/models/reserveModel"
   },
   "schemas": {
-    "renewReserve": "./schemas/renewReserveSchema"
+    "renewReserve": "${servicePath}/operations/schemas/renewReserveSchema"
   },
   "reserveChain": {
-    "getStock": "./operations/chains/reserve/getStock",
-    "preReserveStock": "./operations/chains/reserve/preReserveStock",
-    "reserveStock": "./operations/chains/reserve/reserveStock"
+    "getStock": "${servicePath}/operations/chains/reserve/getStock",
+    "preReserveStock": "${servicePath}/operations/chains/reserve/preReserveStock",
+    "reserveStock": "${servicePath}/operations/chains/reserve/reserveStock"
   },
   "unreserveChain": {
-    "getReserve": "./operations/chains/unreserve/getReserve",
-    "preUnreserveStock": "./operations/chains/unreserve/preUnreserveStock",
-    "unreserveStock": "./operations/chains/unreserve/unreserveStock"
+    "getReserve": "${servicePath}/operations/chains/unreserve/getReserve",
+    "preUnreserveStock": "${servicePath}/operations/chains/unreserve/preUnreserveStock",
+    "unreserveStock": "${servicePath}/operations/chains/unreserve/unreserveStock"
   },
   "workers": [
     {
