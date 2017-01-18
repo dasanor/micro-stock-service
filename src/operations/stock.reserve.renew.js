@@ -12,7 +12,7 @@ function opFactory(base) {
 
   const op = {
     validator: {
-      schema: require(base.config.get('schemas:renewReserve'))
+      schema: base.utils.loadModule('schemas:renewReserve')
     },
     handler: (msg, reply) => {
       if (reserveActive) {
